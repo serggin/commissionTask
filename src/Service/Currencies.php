@@ -18,6 +18,7 @@ class Currencies
     {
         $rate1 = $this->rates[$cur1];
         $rate2 = $this->rates[$cur2];
-        return $rate1/$rate2;
+        $precision = $cur1 === 'JPY' ? 2 : 4;
+        return round($rate1/$rate2, $precision);
     }
 }

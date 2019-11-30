@@ -21,6 +21,38 @@ class CurrenciesTest extends TestCase
     }
 
     public function testUsdEur() {
-        $this->assertEquals($this->rates['EUR']/$this->rates['USD'], $this->currencies->exchangeRate('EUR', 'USD'));
+        $this->assertEquals(
+            $this->rates['USD'],
+            $this->currencies->exchangeRate('USD', 'EUR'));
+    }
+
+    public function testEurUsd() {
+        $this->assertEquals(
+            round($this->rates['EUR']/$this->rates['USD'], 4),
+            $this->currencies->exchangeRate('EUR', 'USD'));
+    }
+
+    public function testJpyEur() {
+        $this->assertEquals(
+            $this->rates['JPY'],
+            $this->currencies->exchangeRate('JPY', 'EUR'));
+    }
+
+    public function testEurJpy() {
+        $this->assertEquals(
+            round($this->rates['EUR']/$this->rates['JPY'], 4),
+            $this->currencies->exchangeRate('EUR', 'JPY'));
+    }
+
+    public function testJpyUsd() {
+        $this->assertEquals(
+            round($this->rates['JPY']/$this->rates['USD'], 2),
+            $this->currencies->exchangeRate('JPY', 'USD'));
+    }
+
+    public function testUsdJpy() {
+        $this->assertEquals(
+            round($this->rates['USD']/$this->rates['JPY'], 4),
+            $this->currencies->exchangeRate('USD', 'JPY'));
     }
 }
