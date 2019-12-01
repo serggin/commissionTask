@@ -40,12 +40,16 @@ class CommissionManagerTest extends TestCase
         $this->assertEquals(count($arrayOfArrays), count($resultArray));
     }
 
-    public function _testSorting(): void
+/*    public function _testSorting(): void
     {
         $dateFieldIndex = 0;
         $arrayOfArrays = $this->prepareInput($this->input1);
         $resultArray = $this->manager->calculateCommission($arrayOfArrays);
-    }
+        echo 'testSorting() $resultArray = '.print_r($resultArray, true).PHP_EOL;
+        foreach ($resultArray as $output) {
+
+        }
+    }*/
 
     private function prepareInput($input): array {
         return array_map(function($item) {

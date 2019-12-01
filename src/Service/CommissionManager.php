@@ -7,6 +7,7 @@ namespace CommissionTask\Service;
 class CommissionManager
 {
     protected $inputData;
+    protected $outputData;
     protected $calculator;
 
     public function __construct(CommissionFeeCalculatorInterface $calculator)
@@ -16,12 +17,14 @@ class CommissionManager
 
     public function calculateCommission($input)
     {
-        $this->inputData = [];
-        $this->indexInput($input);
-        $this->sortInput();
+        $this->inputData = $input;
+        $this->outputData = [];
+        //$this->indexInput($input);
+        //$this->sortInput();
         $this->calculate();
-        $this->unsortInput();
-        return $this->prepareOutput();
+        //$this->unsortInput();
+        //return $this->prepareOutput();
+        return $this->outputData;
     }
 
     protected function indexInput($input) : void
@@ -47,16 +50,18 @@ class CommissionManager
     protected function calculate() : void
     {
         $this->calculator->reset();
-        foreach ($this->inputData as &$value) {
+        $index = 0;
+        foreach ($this->inputData as $input) {
             try {
-                $value['output'] = $this->calculator->calculate($value['input']);
+                $this->outputData[] = $this->calculator->calculate($input);
             } catch  (Exception $ex) {
                 throw new Exception(
-                    'CommissionManager calculate() failed on line ' . $value['index'] . PHP_EOL .
+                    'CommissionManager calculate() failed on line ' . $index . PHP_EOL .
                     $ex->getMessage()
                 );
             }
         }
+        //echo 'calculate(): '.print_r($this->inputData, true).PHP_EOL;
     }
 
     protected function unsortInput() : void
