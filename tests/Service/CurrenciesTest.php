@@ -58,19 +58,19 @@ class CurrenciesTest extends TestCase
 
     public function testConvertEurUsd() {
         $this->assertEquals(
-            $this->rates['USD'],
+            round($this->rates['USD'], 2),
             $this->currencies->convert(1.0,'EUR', 'USD'));
     }
 
     public function testConvertUsdEur() {
         $this->assertEquals(
-            round(1./$this->rates['USD'], 4),
+            round(1./$this->rates['USD'], 2),
             $this->currencies->convert(1.0,'USD', 'EUR'));
     }
 
     public function testConvertUsdJpy() {
         $this->assertEquals(
-            round($this->rates['JPY']/$this->rates['USD'], 2),
+            round($this->rates['JPY']/$this->rates['USD'], 0),
             $this->currencies->convert(1.0,'USD', 'JPY'));
     }
 

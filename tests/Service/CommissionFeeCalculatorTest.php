@@ -31,13 +31,50 @@ class CommissionFeeCalculatorTest extends TestCase
 
         $fee = $this->calculator->calculate($arrayOfArrays[0]);
         //echo '<5EUR in fee = '.$fee.PHP_EOL;
-        $this->assertTrue($fee < $eurLimit, '< 5EUR');
+        $this->assertTrue($fee < $eurLimit, 'EUR < 5EUR');
         $fee = $this->calculator->calculate($arrayOfArrays[1]);
         //echo '5EUR in fee = '.$fee.PHP_EOL;
-        $this->assertTrue($fee == $eurLimit, '= 5EUR');
+        $this->assertTrue($fee == $eurLimit, 'EUR = 5EUR');
         $fee = $this->calculator->calculate($arrayOfArrays[2]);
-        $this->assertTrue($fee == $eurLimit, '> 5EUR');
+        $this->assertTrue($fee == $eurLimit, 'EUR > 5EUR');
         //$resultArray = $this->manager->calculateCommission($arrayOfArrays);
+    }
 
+    public function testUsdCashInFee(): void
+    {
+        $arrayOfArrays = InputDataProvider::getInputData(2);
+        $usdLimit = $this->currencies->convert(
+            CommissionFeeCalculator::CASH_IN_EUR_LIMIT,
+            'EUR',
+            'USD'
+        );
+        //echo '$usdLimit = '.$usdLimit.PHP_EOL;
+        $fee = $this->calculator->calculate($arrayOfArrays[0]);
+        //echo '<5EUR in fee = '.$fee.PHP_EOL;
+        $this->assertTrue($fee < $usdLimit, 'USD < 5EUR');
+        $fee = $this->calculator->calculate($arrayOfArrays[1]);
+        //echo '5EUR in fee = '.$fee.PHP_EOL;
+        $this->assertTrue($fee == $usdLimit, 'USD = 5EUR');
+        $fee = $this->calculator->calculate($arrayOfArrays[2]);
+        $this->assertTrue($fee == $usdLimit, 'USD > 5EUR');
+    }
+
+    public function testJpyCashInFee(): void
+    {
+        $arrayOfArrays = InputDataProvider::getInputData(3);
+        $jpyLimit = $this->currencies->convert(
+            CommissionFeeCalculator::CASH_IN_EUR_LIMIT,
+            'EUR',
+            'JPY'
+        );
+        //echo '$jpyLimit = '.$jpyLimit.PHP_EOL;
+        $fee = $this->calculator->calculate($arrayOfArrays[0]);
+        //echo '<5EUR in fee = '.$fee.PHP_EOL;
+        $this->assertTrue($fee < $jpyLimit, 'JPY < 5EUR');
+        $fee = $this->calculator->calculate($arrayOfArrays[1]);
+        //echo '5EUR in fee = '.$fee.PHP_EOL;
+        $this->assertTrue($fee == $jpyLimit, 'JPY = 5EUR');
+        $fee = $this->calculator->calculate($arrayOfArrays[2]);
+        $this->assertTrue($fee == $jpyLimit, 'JPY > 5EUR');
     }
 }

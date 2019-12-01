@@ -50,8 +50,10 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
         $limit = $this->currencies->convert(
             self::CASH_IN_EUR_LIMIT, 'EUR', $input[self::CURRENCY_TYPE_INDEX]);
         $fee = $input[self::AMOUNT_TYPE_INDEX] * self::CASH_IN_FEE;
+        $fee = $this->currencies->round($fee, $input[self::CURRENCY_TYPE_INDEX]);
         $fee = $fee > $limit ? $limit : $fee;
-        return $this->currencies->round($fee, $input[self::CURRENCY_TYPE_INDEX]);
+        //return $this->currencies->round($fee, $input[self::CURRENCY_TYPE_INDEX]);
+        return $fee;
     }
 
 }
