@@ -4,7 +4,7 @@
 namespace CommissionTask\Service;
 
 
-class CommisionFeeRule1
+class CommissionFeeCalculator
 {
 
 }

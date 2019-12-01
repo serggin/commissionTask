@@ -4,7 +4,7 @@
 namespace CommissionTask\Service;
 
 
-class CommisionFeeCalculator
+interface CommissionFeeRuleInterface
 {
 
 }
