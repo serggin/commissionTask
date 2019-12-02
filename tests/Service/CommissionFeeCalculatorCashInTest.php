@@ -47,7 +47,7 @@ class CommissionFeeCalculatorCashInTest extends TestCase
             'EUR',
             'USD'
         );
-        //echo '$usdLimit = '.$usdLimit.PHP_EOL;
+        echo '$usdLimit = '.$usdLimit.PHP_EOL;
         $fee = $this->calculator->calculate($arrayOfArrays[0]);
         //echo '<5EUR in fee = '.$fee.PHP_EOL;
         $this->assertTrue($fee < $usdLimit, 'USD < 5EUR');

@@ -34,7 +34,7 @@ class CommissionFeeCalculatorCashOutLegalTest extends TestCase
         //echo '<.5EUR out fee = '.$fee.PHP_EOL;
         $this->assertTrue($fee == $eurLimit, 'EUR < .5EUR');
         $fee = $this->calculator->calculate($arrayOfArrays[1]);
-        //echo '.5EUR out fee = '.$fee.PHP_EOL;
+        echo '.5EUR out fee = '.$fee.PHP_EOL;
         $this->assertTrue($fee == $eurLimit, 'EUR = .5EUR');
         $fee = $this->calculator->calculate($arrayOfArrays[2]);
         //echo '>.5EUR out fee = '.$fee.PHP_EOL;

@@ -26,7 +26,7 @@ class CommissionFeeCalculatorMock implements CommissionFeeCalculatorInterface
         $this->index = 0;
     }
 
-    public function calculate(array $input): float
+    public function calculate(array $input): string
     {
         return $this->index++;
     }

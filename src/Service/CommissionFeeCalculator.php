@@ -41,14 +41,18 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
         $this->users = [];
     }
 
-    public function calculate(array $input): float
+    public function calculate(array $input): string
     {
         if ($input[self::OPERATION_TYPE_INDEX] == self::CASH_IN_TYPE) {
-            return $this->calculateCashInFee($input);
+            $result = $this->calculateCashInFee($input);
         } else {
-            return $this->calculateCashOutFee($input);
+            $result = $this->calculateCashOutFee($input);
         }
-        return 0;
+        if ($input[self::CURRENCY_TYPE_INDEX] == 'JPY') {
+            return number_format($result, 0, '.', '');
+        } else {
+            return number_format($result, 2, '.', '');
+        }
     }
 
     protected function calculateCashInFee(array $input): float
@@ -93,7 +97,7 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
             $weekData = $user->getWeekData();
             $monday = self::mondayForDate($input[self::DATE_INDEX]);
             if ($weekData['date'] < $monday) {
-                echo 'resetWeekData() $monday='.$monday.', '.$weekData['date'].PHP_EOL;
+                //echo 'resetWeekData() $monday='.$monday.', '.$weekData['date'].PHP_EOL;
                 $user->resetWeekData();
                 $weekData = $user->getWeekData();
             }
@@ -105,16 +109,24 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
         $weekCount = $weekData['count'];
         $weekAmount = $weekData['amount'];
         $amount = $input[self::AMOUNT_TYPE_INDEX];
-        $eurAmount = $this->currencies->convert($amount, $input[self::CURRENCY_TYPE_INDEX], 'EUR');
+        $eurAmount = $this->currencies->convert($amount, $input[self::CURRENCY_TYPE_INDEX], 'EUR', false);
         $user->addWeekData($input[self::DATE_INDEX], $eurAmount);
         $this->users[$userId] = $user;
         if ($weekCount < self::CASH_OUT_NATURAL_OPERATION_LIMIT) {
             $newWeekAmount = $weekAmount + $eurAmount;
-            $amountExcess = $newWeekAmount - self::CASH_OUT_NATURAL_EUR_LIMIT;
-            if ($input[self::DATE_INDEX] <= '2019-11-17') {
+            if ($weekAmount <= self::CASH_OUT_NATURAL_EUR_LIMIT) {
+                $amountExcess = $newWeekAmount - self::CASH_OUT_NATURAL_EUR_LIMIT;
+            } else {
+                $amountExcess = $eurAmount;
+            }
+            if ($input[self::CURRENCY_TYPE_INDEX] == 'USD') {
+                echo PHP_EOL.'$eurAmount='.$eurAmount.' $newWeekAmount='.$newWeekAmount.' $amountExcess='.$amountExcess.PHP_EOL;
+
+            }
+            //if ($input[self::DATE_INDEX] <= '2019-11-17') {
                 //echo PHP_EOL.'$this->users='.print_r($this->users, true).PHP_EOL;
                 //echo PHP_EOL.'$weekCount='.$weekCount.' $newWeekAmount='.$newWeekAmount.' $amountExcess='.$amountExcess.PHP_EOL;
-            }
+            //}
             if ($amountExcess <= 0) {
                 $fee = 0;
             } else {
@@ -123,7 +135,14 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
         } else {
             $fee = $eurAmount * self::CASH_OUT_FEE;
         }
+        if ($input[self::CURRENCY_TYPE_INDEX] == 'USD') {
+            echo PHP_EOL.'BEFORE $fee='.$fee.PHP_EOL;
+        }
         $fee = $this->currencies->convert($fee, 'EUR', $input[self::CURRENCY_TYPE_INDEX]);
+        if ($input[self::CURRENCY_TYPE_INDEX] == 'USD') {
+            echo PHP_EOL.'AFTER $fee='.$fee.PHP_EOL;
+
+        }
         return $fee;
     }
 

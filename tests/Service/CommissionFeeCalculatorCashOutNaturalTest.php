@@ -36,6 +36,17 @@ class CommissionFeeCalculatorCashOutNaturalTest extends TestCase
         }
     }
 
+    public function testJpyCashOutNaturalDiscountFee(): void
+    {
+        foreach($this->jpyCashOutNaturalDiscountFeeProvider() as $data) {
+            $input = $data[0];
+            $expected = $data[1];
+            $fee = $this->calculator->calculate($input);
+            echo $input[0] . ', ' . $input[4] . ' - ' . $fee . PHP_EOL;
+            $this->assertEquals($expected, $fee, $input[0]);
+        }
+    }
+
     public function eurCashOutNaturalDiscountFeeProvider(): array
     {
         $arrayOfArrays = InputDataProvider::getInputData(5);
@@ -51,6 +62,15 @@ class CommissionFeeCalculatorCashOutNaturalTest extends TestCase
             [$arrayOfArrays[7], 0],
             [$arrayOfArrays[8], 0],
             [$arrayOfArrays[9], $fee200],
+        ];
+    }
+
+    public function jpyCashOutNaturalDiscountFeeProvider(): array
+    {
+        $arrayOfArrays = InputDataProvider::getInputData(6);
+        //$fee200 = round(200 * CommissionFeeCalculator::CASH_OUT_FEE, 2);
+        return [
+            [$arrayOfArrays[0], 8612],
         ];
     }
 }
