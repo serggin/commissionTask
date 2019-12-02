@@ -36,6 +36,23 @@ class InputDataProvider
             '2019-12-01,1,natural,cash_in,2158300,JPY',
             '2019-12-02,1,natural,cash_in,2160000,JPY',
             '2019-12-03,1,natural,cash_in,2200000,JPY',
+        ],
+        4 => [
+            '2019-12-01,11,legal,cash_out,160,EUR',
+            '2019-12-02,11,legal,cash_out,167,EUR',
+            '2019-12-03,11,legal,cash_out,169,EUR',
+        ],
+        5 => [
+            '2019-11-04,1,natural,cash_out,400,EUR',
+            '2019-11-08,1,natural,cash_out,400,EUR',
+            '2019-11-10,1,natural,cash_out,200,EUR',
+            '2019-11-11,1,natural,cash_out,400,EUR',
+            '2019-11-15,1,natural,cash_out,400,EUR',
+            '2019-11-17,1,natural,cash_out,400,EUR',
+            '2019-11-18,1,natural,cash_out,200,EUR',
+            '2019-11-20,1,natural,cash_out,200,EUR',
+            '2019-11-23,1,natural,cash_out,200,EUR',
+            '2019-11-24,1,natural,cash_out,200,EUR',
         ]
     ];
 

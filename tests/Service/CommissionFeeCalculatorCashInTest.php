@@ -8,7 +8,7 @@ use CommissionTask\Service\CommissionFeeCalculator;
 use CommissionTask\Service\Currencies;
 use PHPUnit\Framework\TestCase;
 
-class CommissionFeeCalculatorTest extends TestCase
+class CommissionFeeCalculatorCashInTest extends TestCase
 {
     private $rates;
     private $currencies;
@@ -37,7 +37,6 @@ class CommissionFeeCalculatorTest extends TestCase
         $this->assertTrue($fee == $eurLimit, 'EUR = 5EUR');
         $fee = $this->calculator->calculate($arrayOfArrays[2]);
         $this->assertTrue($fee == $eurLimit, 'EUR > 5EUR');
-        //$resultArray = $this->manager->calculateCommission($arrayOfArrays);
     }
 
     public function testUsdCashInFee(): void
