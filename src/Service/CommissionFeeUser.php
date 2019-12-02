@@ -1,9 +1,15 @@
 <?php
 
+declare(strict_types=1);
 
 namespace CommissionTask\Service;
 
-
+/**
+ * Class CommissionFeeUser.
+ *
+ * Responsibily:
+ * store and handle data for natural user
+ */
 class CommissionFeeUser
 {
     private $date;
@@ -27,15 +33,14 @@ class CommissionFeeUser
         return [
             'date' => $this->date,
             'count' => $this->weekCount,
-            'amount' => $this->weekAmount
+            'amount' => $this->weekAmount,
         ];
     }
 
     public function addWeekData(string $date, float $eurAmount): void
     {
         $this->date = $date;
-        $this->weekCount++;
+        ++$this->weekCount;
         $this->weekAmount += $eurAmount;
     }
-
 }

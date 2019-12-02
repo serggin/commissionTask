@@ -4,7 +4,8 @@
 namespace CommissionTask\Tests\Service;
 
 use PHPUnit\Framework\TestCase;
-//use CommissionFeeCalculatorMock;
+use CommissionTask\Service\Currencies;
+use CommissionTask\Service\CommissionFeeCalculator;
 use CommissionTask\Service\CommissionManager;
 
 class CommissionManagerTest extends TestCase
@@ -24,13 +25,36 @@ class CommissionManagerTest extends TestCase
         '2016-02-15,1,natural,cash_out,300.00,EUR',
         '2016-02-19,5,natural,cash_out,3000000,JPY'
     ];
+    private $output1 = [
+        '0.60',
+        '3.00',
+        '0.00',
+        '0.06',
+        '0.90',
+        '0',
+        '0.70',
+        '0.30',
+        '0.30',
+        '5.00',
+        '0.00',
+        '0.00',
+        '8612'
+    ];
 
     private $calculator;
     private $manager;
 
-    public function setUp(): void {
-        $this->calculator = new CommissionFeeCalculatorMock();  // ?? class prop is needed?
+    public function setUp(): void
+    {
+        $rates = [
+        'EUR' => 1,
+        'USD' => 1.1497,
+        'JPY' => 129.53
+        ];
+        $currencies = new Currencies($rates);
+        $this->calculator = new CommissionFeeCalculator($currencies);
         $this->manager = new CommissionManager($this->calculator);
+        $this->calculator->reset();
     }
 
     public function testResultSize(): void
@@ -40,18 +64,17 @@ class CommissionManagerTest extends TestCase
         $this->assertEquals(count($arrayOfArrays), count($resultArray));
     }
 
-/*    public function _testSorting(): void
+    public function testIntegralInput1(): void
     {
-        $dateFieldIndex = 0;
         $arrayOfArrays = $this->prepareInput($this->input1);
         $resultArray = $this->manager->calculateCommission($arrayOfArrays);
-        echo 'testSorting() $resultArray = '.print_r($resultArray, true).PHP_EOL;
-        foreach ($resultArray as $output) {
-
+        for ($i=0; $i<count($this->output1); $i++) {
+            $this->assertEquals($this->output1[$i], $resultArray[$i], 'record '.$i);
         }
-    }*/
+    }
 
-    private function prepareInput($input): array {
+    private function prepareInput($input): array
+    {
         return array_map(function($item) {
             return str_getcsv($item);
         }, $input);

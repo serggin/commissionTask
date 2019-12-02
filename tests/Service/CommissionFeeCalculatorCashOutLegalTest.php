@@ -29,15 +29,11 @@ class CommissionFeeCalculatorCashOutLegalTest extends TestCase
         $arrayOfArrays = InputDataProvider::getInputData(4);
         $eurLimit = CommissionFeeCalculator::CASH_OUT_LEGAL_EUR_LIMIT;
 
-        //echo '$eurLimit = '.$eurLimit.PHP_EOL;
         $fee = $this->calculator->calculate($arrayOfArrays[0]);
-        //echo '<.5EUR out fee = '.$fee.PHP_EOL;
         $this->assertTrue($fee == $eurLimit, 'EUR < .5EUR');
         $fee = $this->calculator->calculate($arrayOfArrays[1]);
-        echo '.5EUR out fee = '.$fee.PHP_EOL;
         $this->assertTrue($fee == $eurLimit, 'EUR = .5EUR');
         $fee = $this->calculator->calculate($arrayOfArrays[2]);
-        //echo '>.5EUR out fee = '.$fee.PHP_EOL;
         $this->assertTrue($fee > $eurLimit, 'EUR > .5EUR');
         $this->assertEquals(
             $fee,

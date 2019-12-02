@@ -31,7 +31,6 @@ class CommissionFeeCalculatorCashOutNaturalTest extends TestCase
             $input = $data[0];
             $expected = $data[1];
             $fee = $this->calculator->calculate($input);
-            echo $input[0] . ', ' . $input[4] . ' - ' . $fee . PHP_EOL;
             $this->assertEquals($expected, $fee, $input[0]);
         }
     }
@@ -42,7 +41,6 @@ class CommissionFeeCalculatorCashOutNaturalTest extends TestCase
             $input = $data[0];
             $expected = $data[1];
             $fee = $this->calculator->calculate($input);
-            echo $input[0] . ', ' . $input[4] . ' - ' . $fee . PHP_EOL;
             $this->assertEquals($expected, $fee, $input[0]);
         }
     }

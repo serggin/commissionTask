@@ -1,9 +1,15 @@
 <?php
 
+declare(strict_types=1);
 
 namespace CommissionTask\Service;
 
-
+/**
+ * Class CommissionFeeCalculator.
+ *
+ * Responsibily:
+ * calculates commission fee
+ */
 class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
 {
     protected const DATE_INDEX = 0;
@@ -13,11 +19,11 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
     protected const AMOUNT_TYPE_INDEX = 4;
     protected const CURRENCY_TYPE_INDEX = 5;
 
-    protected const NATURAL_USER = 'natural';
+    //protected const NATURAL_USER = 'natural';
     protected const LEGAL_USER = 'legal';
 
     protected const CASH_IN_TYPE = 'cash_in';
-    protected const CASH_OUT_TYPE = 'cash_out';
+    //protected const CASH_OUT_TYPE = 'cash_out';
 
     public const CASH_IN_EUR_LIMIT = 5.;
     public const CASH_IN_FEE = .0003;
@@ -27,7 +33,6 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
     public const CASH_OUT_LEGAL_EUR_LIMIT = .5;
     public const CASH_OUT_NATURAL_OPERATION_LIMIT = 3;
 
-
     protected $currencies;
     protected $users;   //Natural users for cash out operations
 
@@ -36,19 +41,27 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
         $this->currencies = $currencies;
     }
 
+    /**
+     * Clear calculation history. Used in tests.
+     */
     public function reset(): void
     {
         $this->users = [];
     }
 
+    /**
+     * Calculate one operaion recoed.
+     *
+     * @param array $input - record data
+     */
     public function calculate(array $input): string
     {
-        if ($input[self::OPERATION_TYPE_INDEX] == self::CASH_IN_TYPE) {
+        if ($input[self::OPERATION_TYPE_INDEX] === self::CASH_IN_TYPE) {
             $result = $this->calculateCashInFee($input);
         } else {
             $result = $this->calculateCashOutFee($input);
         }
-        if ($input[self::CURRENCY_TYPE_INDEX] == 'JPY') {
+        if ($input[self::CURRENCY_TYPE_INDEX] === 'JPY') {
             return number_format($result, 0, '.', '');
         } else {
             return number_format($result, 2, '.', '');
@@ -62,18 +75,17 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
         $fee = $input[self::AMOUNT_TYPE_INDEX] * self::CASH_IN_FEE;
         $fee = $this->currencies->round($fee, $input[self::CURRENCY_TYPE_INDEX]);
         $fee = $fee > $limit ? $limit : $fee;
-        //return $this->currencies->round($fee, $input[self::CURRENCY_TYPE_INDEX]);
+
         return $fee;
     }
 
     protected function calculateCashOutFee(array $input): float
     {
-        if ($input[self::USER_TYPE_INDEX] == self::LEGAL_USER) {
+        if ($input[self::USER_TYPE_INDEX] === self::LEGAL_USER) {
             return $this->calculateCashOutLegalFee($input);
         } else {
             return $this->calculateCashOutNaturalFee($input);
         }
-        return 0;
     }
 
     protected function calculateCashOutLegalFee(array $input): float
@@ -86,6 +98,7 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
         $fee = $input[self::AMOUNT_TYPE_INDEX] * self::CASH_OUT_FEE;
         $fee = $this->currencies->round($fee, $input[self::CURRENCY_TYPE_INDEX]);
         $fee = $fee < $limit ? $limit : $fee;
+
         return $fee;
     }
 
@@ -97,21 +110,22 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
             $weekData = $user->getWeekData();
             $monday = self::mondayForDate($input[self::DATE_INDEX]);
             if ($weekData['date'] < $monday) {
-                //echo 'resetWeekData() $monday='.$monday.', '.$weekData['date'].PHP_EOL;
                 $user->resetWeekData();
                 $weekData = $user->getWeekData();
             }
         } else {
             $user = new CommissionFeeUser();
-
             $weekData = $user->getWeekData();
         }
+
         $weekCount = $weekData['count'];
         $weekAmount = $weekData['amount'];
-        $amount = $input[self::AMOUNT_TYPE_INDEX];
+        $amount = floatval($input[self::AMOUNT_TYPE_INDEX]);
         $eurAmount = $this->currencies->convert($amount, $input[self::CURRENCY_TYPE_INDEX], 'EUR', false);
+
         $user->addWeekData($input[self::DATE_INDEX], $eurAmount);
         $this->users[$userId] = $user;
+
         if ($weekCount < self::CASH_OUT_NATURAL_OPERATION_LIMIT) {
             $newWeekAmount = $weekAmount + $eurAmount;
             if ($weekAmount <= self::CASH_OUT_NATURAL_EUR_LIMIT) {
@@ -119,14 +133,6 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
             } else {
                 $amountExcess = $eurAmount;
             }
-            if ($input[self::CURRENCY_TYPE_INDEX] == 'USD') {
-                echo PHP_EOL.'$eurAmount='.$eurAmount.' $newWeekAmount='.$newWeekAmount.' $amountExcess='.$amountExcess.PHP_EOL;
-
-            }
-            //if ($input[self::DATE_INDEX] <= '2019-11-17') {
-                //echo PHP_EOL.'$this->users='.print_r($this->users, true).PHP_EOL;
-                //echo PHP_EOL.'$weekCount='.$weekCount.' $newWeekAmount='.$newWeekAmount.' $amountExcess='.$amountExcess.PHP_EOL;
-            //}
             if ($amountExcess <= 0) {
                 $fee = 0;
             } else {
@@ -135,14 +141,8 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
         } else {
             $fee = $eurAmount * self::CASH_OUT_FEE;
         }
-        if ($input[self::CURRENCY_TYPE_INDEX] == 'USD') {
-            echo PHP_EOL.'BEFORE $fee='.$fee.PHP_EOL;
-        }
         $fee = $this->currencies->convert($fee, 'EUR', $input[self::CURRENCY_TYPE_INDEX]);
-        if ($input[self::CURRENCY_TYPE_INDEX] == 'USD') {
-            echo PHP_EOL.'AFTER $fee='.$fee.PHP_EOL;
 
-        }
         return $fee;
     }
 
