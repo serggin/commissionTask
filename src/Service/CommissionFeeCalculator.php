@@ -39,6 +39,7 @@ class CommissionFeeCalculator implements CommissionFeeCalculatorInterface
     public function __construct(Currencies $currencies)
     {
         $this->currencies = $currencies;
+        $this->reset();
     }
 
     /**
